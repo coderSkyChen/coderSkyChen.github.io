@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>softmax函数与多项分布 | coderskychen的主页</title>
+  <title>softmax函数与多项分布 | SkyChen的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="从神经科学的角度来看是很有意思的，我们可以认为softmax函数为输出单元创建了一种竞争模式：由于softmax的输出值之和为1，因此，如果有一个输出单元的值增大了，那么其他所有单元的值都将会受到抑制！而这与生物皮质神经元之间的侧向抑制现象不谋而合啊！在极端的条件下，这就会演化为一种胜者通吃的模式！(winner-take-all)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="softmax函数与多项分布">
 <meta property="og:url" content="http://yoursite.com/2016/09/18/softmax函数与多项分布/index.html">
-<meta property="og:site_name" content="coderskychen的主页">
+<meta property="og:site_name" content="SkyChen的博客">
 <meta property="og:description" content="从神经科学的角度来看是很有意思的，我们可以认为softmax函数为输出单元创建了一种竞争模式：由于softmax的输出值之和为1，因此，如果有一个输出单元的值增大了，那么其他所有单元的值都将会受到抑制！而这与生物皮质神经元之间的侧向抑制现象不谋而合啊！在极端的条件下，这就会演化为一种胜者通吃的模式！(winner-take-all)">
 <meta property="og:image" content="http://latex.codecogs.com/png.latex?%5Chat%7By%7D%3DP%28y%3D1%7Cx%29----------%286.27%29">
 <meta property="og:image" content="http://latex.codecogs.com/png.latex?z%3D%5Ctextit%7B%7D%5Ctextup%7BW%7D%5E%7BT%7D%5Ctextit%7B%7D%5Cmathbf%7Bh%7D+b------------%286.28%29">
@@ -24,7 +24,7 @@
 <meta name="twitter:description" content="从神经科学的角度来看是很有意思的，我们可以认为softmax函数为输出单元创建了一种竞争模式：由于softmax的输出值之和为1，因此，如果有一个输出单元的值增大了，那么其他所有单元的值都将会受到抑制！而这与生物皮质神经元之间的侧向抑制现象不谋而合啊！在极端的条件下，这就会演化为一种胜者通吃的模式！(winner-take-all)">
 <meta name="twitter:image" content="http://latex.codecogs.com/png.latex?%5Chat%7By%7D%3DP%28y%3D1%7Cx%29----------%286.27%29">
   
-    <link rel="alternative" href="/atom.xml" title="coderskychen的主页" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="SkyChen的博客" type="application/atom+xml">
   
   
     <link rel="icon" href="//favicon.png">
@@ -65,17 +65,12 @@
 	        
     		
     			
-    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">标签</a>
     			
     			
             
     			
-    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
-    			
-    			
-            
-    			
-    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">关于我</a>
     			
     			
             
@@ -83,6 +78,8 @@
 		<nav class="header-nav">
 			<div class="social">
 				
+					<a class="weibo" target="_blank" href="http://weibo.com/coderSkyChen" title="weibo">weibo</a>
+		        
 			</div>
 		</nav>
 	</header>		
@@ -120,6 +117,8 @@
 			<nav class="header-nav">
 				<div class="social">
 					
+						<a class="weibo" target="_blank" href="http://weibo.com/coderSkyChen" title="weibo">weibo</a>
+			        
 				</div>
 			</nav>
 		</header>				
@@ -298,8 +297,6 @@ MathJax.Hub.Queue(function() {
 <div class="tools-col">
   <ul class="btn-wrap">
     
-      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
-    
     
       <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
     
@@ -309,9 +306,6 @@ MathJax.Hub.Queue(function() {
     
   </ul>
   <div class="tools-wrap">
-    
-    	<section class="tools-section tools-section-all chose">
-    	</section>
     
 
     
