@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Hexo</title>
+  <title>Tag: 深度学习 翻译 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/深度学习-翻译/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo">
@@ -118,118 +118,52 @@
       <div class="body-wrap">
         
   
-    <article id="post-softmax函数与多项分布" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
+  
     
     
-      <header class="article-header">
-        
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2016" class="archive-year">2016</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2016/09/18/softmax函数与多项分布/" class="archive-article-date">
+  	<time datetime="2016-09-18T07:09:58.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-09-18</time>
+</a>
+        </div>
+    	 
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/18/softmax函数与多项分布/">softmax函数与多项分布</a>
+      <a class="archive-article-title" href="/2016/09/18/softmax函数与多项分布/">softmax函数与多项分布</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>当我们希望表示有n种可能的离散变量的概率分布情况时，softmax函数就隆重登场了。它可以被看为是sigmoid函数的一种推广。</p>
-<p>Softmax函数的身影常出没于多分类任务的分类器中，但是也有一种不太常见的应用，就是当我们希望模型从多个不同的的值中进行选择的时候，softmax函数可以被用于模型内部变量的确定。</p>
-<p>　　我们回顾之前的二分类案例，我们希望产生一个数值：<br>　　　　<img src="http://latex.codecogs.com/png.latex?%5Chat%7By%7D%3DP%28y%3D1%7Cx%29----------%286.27%29" alt=""></p>
-<p>　　因为这个数值应处于0到1之间，而且我们想要这个数值的对数能够在基于log似然的损失函数的梯度下降算法中有很好的性能，我们选择了预测一个数值z=logP(y=1|x)作为替代。通过指数化与标准化，我们得到了一个受到sigmoid函数控制的伯努利分布。</p>
-<p>　　现在来看看更一般的情况，对于有n个可能的离散变量，我们现在需要得到一个向量y，其中yi=P(y=i|x)。我们不仅要求每一个分量yi处于0到1之间，还要求分量之和为1，这样才是一个有效的概率分布。我们还是以分析伯努利分布的方式来分析多项分布。</p>
-<p>　　首先有一个线性层预测尚未归一化的log概率：<br>　　　　<img src="http://latex.codecogs.com/png.latex?z%3D%5Ctextit%7B%7D%5Ctextup%7BW%7D%5E%7BT%7D%5Ctextit%7B%7D%5Cmathbf%7Bh%7D&plus;b------------%286.28%29" alt=""><br>　　其中，zi=logP(y=i|x)。随后softmax函数将其指数化、归一化就得到了我们希望的y。正式地讲，softmax函数形式如下：<br>　　　　<img src="http://latex.codecogs.com/png.latex?softmax%28z%29_%7Bi%7D%3D%5Cfrac%7Bexp%28z_%7Bi%7D%29%7D%7B%5Csum_%7Bj%7D%5E%7Bn%7Dexp%28z_%7Bj%7D%29%7D----------%286.29%29" alt=""><br>　　我们希望最大化logP(y=i|x)=log softmax(z)i.  我们之所以将其对数化，原因还是一个：好计算~(因为log可以抵消exp)<br>　　　　<img src="http://latex.codecogs.com/png.latex?%5Clog%20softmax%28z_%7Bi%7D%29%3Dz_%7Bi%7D-log%5Csum_%7Bj%7D%5E%7Bn%7Dexp%28z_%7Bi%7D%29------%286.30%29" alt=""><br>　　6.30的第一项表明输入zi对损失函数有直接的影响，因为该项不会饱和所以我们可以断定基于6.30的梯度下降法能够高效的完成(即使第二项饱和也没有关系哦)。当最大化log似然时，第一项zi会趋于增大，而第二项则使得z的所有分量降低；对于第二项，容易发现如果z的某一个分量远大于其他项，那么第二项就会趋向于那个分量的值；因而在迭代的过程中，算法会对误判的样例进行更强的惩罚！</p>
-<p>　　除了log似然，其他目标函数与softmax并不那么搭，还是因为前边层多次提到的梯度下降速度的问题。为了理解为何其他函数会失效，我们需要仔细审视一下softmax函数本身。</p>
-<p>　　我们先给出结论：类似sigmoid，softmax也有近饱和的问题，在softmax函数中，存在多个输出值，当输入值之间的差别非常大的时候，它的输出值就会近饱和。</p>
-<p>　　好，接下来我们来分析一下这个结论是如何得出的：</p>
-<p>　　经过仔细观察与推导，我们很容易得到一下结论：<br>　　　　<img src="http://latex.codecogs.com/png.latex?softmax%28z%29%3Dsoftmax%28z&plus;c%29--------%286.32%29" alt=""><br>　　这个式子的意思就是如果softmax函数的所有变量同时增加或减少同一个标量的话，函数值是不变的！（是不是很神奇0.0 不放心的同学可以自己推一下，其实就是分子分母同时提取了一个exp(c)）</p>
-<p>　　根据上述性质，我们紧接着就会得到如下的式子：<br>　　　　<img src="http://latex.codecogs.com/png.latex?softmax%28z%29%3Dsoftmax%28z-%5Cmax%20z_%7Bi%7D%29------%286.33%29" alt=""><br>　　推到这里寓意就很明显了，当输入值之间的差别非常大的时候，它们的输出值几乎不会变化。这与我们上边的结论首尾呼应！而这个结论其实与sigmoid函数饱和状态的一个推广形式！</p>
-<p>　　从神经科学的角度来看是很有意思的，我们可以认为softmax函数为输出单元创建了一种竞争模式：由于softmax的输出值之和为1，因此，如果有一个输出单元的值增大了，那么其他所有单元的值都将会受到抑制！而这与生物皮质神经元之间的侧向抑制现象不谋而合啊！在极端的条件下，这就会演化为一种胜者通吃的模式！(winner-take-all)</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/09/18/softmax函数与多项分布/" class="archive-article-date">
-  	<time datetime="2016-09-18T07:09:58.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-09-18</time>
-</a>
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags"></i>
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/深度学习-翻译/">深度学习 翻译</a></li></ul>
 	</div>
 
-      
+          
 
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-
-
-
-
-
-
-
-
-
   
-    <article id="post-helloworld" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
+    </div></section>
+  
+
     
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/18/helloworld/">helloworld</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>hello 这是我的第一个自建博客~</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/09/18/helloworld/" class="archive-article-date">
-  	<time datetime="2016-09-18T03:52:02.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-09-18</time>
-</a>
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/初体验/">初体验</a></li></ul>
-	</div>
-
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-  
 
 
       </div>
@@ -251,10 +185,10 @@
 		fancybox: true,
 		mathjax: true,
 		animate: true,
-		isHome: true,
+		isHome: false,
 		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: true,
 		root: "/"
