@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="SkyChen的博客">
 <meta property="og:description" content="R-CNN，Fast R-CNN和Faster R-CNN是目标检测任务中非常经典的三部曲，每一个工作都能给人留下非常深刻的印象，近似于一种艺术，近期再次拜读，有许多收获。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-15T11:52:35.746Z">
+<meta property="og:updated_time" content="2019-02-18T03:41:28.908Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="温故知新：重读R-CNN，Fast R-CNN和Faster R-CNN">
 <meta name="twitter:description" content="R-CNN，Fast R-CNN和Faster R-CNN是目标检测任务中非常经典的三部曲，每一个工作都能给人留下非常深刻的印象，近似于一种艺术，近期再次拜读，有许多收获。">
@@ -193,7 +193,7 @@
 <h2 id="RPN让人惊艳"><a href="#RPN让人惊艳" class="headerlink" title="RPN让人惊艳"></a>RPN让人惊艳</h2><p>之前的两个算法都没有摈弃SS获取proposals的路子。到了Faster R-CNN中，作者提出了RPN，使得连proposals都可以从网络中获得，RPN的输入是特征图，输出是proposals。</p>
 <ul>
 <li>RPN思想：使用一个小网络在特征图上滑动，预测在某个位置上时，bbox区域属于前景概率同时回归一波。</li>
-<li>RPN实现：使用<code>3*3</code>卷积增大中心像素的感受野，随后使用<code>1*1</code>卷积实现全连接网络的滑动，非常巧妙，比如：特征图：<code>C:512,h:37.w:50</code>，<code>1*1</code>卷积通过输出通道的设置，巧妙的实现了全连接网络在特征图每个位置滑动的过程。<br>综上，RPN的思想和实现都是让人感到精巧。<h2 id="什么是锚点（anchor）？如何起作用？"><a href="#什么是锚点（anchor）？如何起作用？" class="headerlink" title="什么是锚点（anchor）？如何起作用？"></a>什么是锚点（anchor）？如何起作用？</h2>文中称“We introduce novel “anchor” boxes that serve as references at multiple scales and aspect ratios.”<br>锚点是RPN应对多尺度的一种策略，锚点具体来说就是一组bbox坐标。在文中作者枚举了9种锚点。<br>锚点的思想是：在特征图的每一个位置上预测K个bbox，而这K个bbox又有不同的形状先验，在bbox回归时进行修正；这样做的合理性在于：特征图每个点都在原图中有一定的感受野。<h2 id="Faster-R-CNN的最小分辨率"><a href="#Faster-R-CNN的最小分辨率" class="headerlink" title="Faster R-CNN的最小分辨率"></a>Faster R-CNN的最小分辨率</h2>由于Faster R-CNN是基于特征图获取proposal的，如果基网络为VGG，那么最小分辨率为16，因为有4个pool，对于特征图某个位置来说，原图中的对应16个像素都会映射到这个位置上是无法区分开的。<h2 id="锚点与感受野"><a href="#锚点与感受野" class="headerlink" title="锚点与感受野"></a>锚点与感受野</h2>我注意到论文中提到VGG的在conv5_3的感受野是228，即使是3<em>3卷机之后，感受野228+16</em>2也是很小的，而锚点的尺寸中，最大的有512*512的，我觉得这是很不合理的，因为明显的大于了感受野区域，所以我觉得faster-R-CNN对于大物体来说应该是很不准的。</li>
+<li>RPN实现：使用<code>3*3</code>卷积增大中心像素的感受野，随后使用<code>1*1</code>卷积实现全连接网络的滑动，非常巧妙，比如：特征图：<code>C:512,h:37.w:50</code>，<code>1*1</code>卷积通过输出通道的设置，巧妙的实现了全连接网络在特征图每个位置滑动的过程。<br>综上，RPN的思想和实现都是让人感到精巧。<h2 id="什么是锚点（anchor）？如何起作用？"><a href="#什么是锚点（anchor）？如何起作用？" class="headerlink" title="什么是锚点（anchor）？如何起作用？"></a>什么是锚点（anchor）？如何起作用？</h2>文中称“We introduce novel “anchor” boxes that serve as references at multiple scales and aspect ratios.”<br>锚点是RPN应对多尺度的一种策略，锚点具体来说就是一组bbox坐标。在文中作者枚举了9种锚点。<br>锚点的思想是：在特征图的每一个位置上预测K个bbox，而这K个bbox又有不同的形状先验，在bbox回归时进行修正；这样做的合理性在于：特征图每个点都在原图中有一定的感受野。<h2 id="Faster-R-CNN的最小分辨率"><a href="#Faster-R-CNN的最小分辨率" class="headerlink" title="Faster R-CNN的最小分辨率"></a>Faster R-CNN的最小分辨率</h2>由于Faster R-CNN是基于特征图获取proposal的，如果基网络为VGG，那么最小分辨率为<code>16*16</code>，因为有4个pool，对于特征图某个位置来说，原图中的对应16个像素都会映射到这个位置上是无法区分开的。<h2 id="锚点与感受野"><a href="#锚点与感受野" class="headerlink" title="锚点与感受野"></a>锚点与感受野</h2>我注意到论文中提到VGG的在conv5_3的感受野是228，即使是3<em>3卷机之后，感受野228+16</em>2也是很小的，而锚点的尺寸中，最大的有512*512的，我觉得这是很不合理的，因为明显的大于了感受野区域，所以我觉得faster-R-CNN对于大物体来说应该是很不准的。</li>
 </ul>
 
       
@@ -481,19 +481,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">排序学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">region recognition</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">spatial reasoning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">视觉推理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -501,11 +493,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">温故知新</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">videocaption</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">温故知新</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据挖掘</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -513,15 +509,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">keras</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据挖掘</a>
+                <a href="javascript:void(0)" class="js-tag color1">keras</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -538,6 +530,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">视频编解码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">region recognition</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">spatial reasoning</a>
               </li>
             
             <div class="clearfix"></div>
