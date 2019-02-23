@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="SkyChen的博客">
 <meta property="og:description" content="最近看到了任务蒸馏的论文，顺便整理一下蒸馏方向的文章。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-23T05:08:23.970Z">
+<meta property="og:updated_time" content="2019-02-23T05:14:11.953Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="知识蒸馏三部曲：从模型蒸馏、数据蒸馏到任务蒸馏">
 <meta name="twitter:description" content="最近看到了任务蒸馏的论文，顺便整理一下蒸馏方向的文章。">
@@ -190,7 +190,7 @@
 </ol>
 <h1 id="任务蒸馏：DistInit-Learning-Video-Representations-without-a-Single-Labeled-Video"><a href="#任务蒸馏：DistInit-Learning-Video-Representations-without-a-Single-Labeled-Video" class="headerlink" title="任务蒸馏：DistInit: Learning Video Representations without a Single Labeled Video"></a>任务蒸馏：DistInit: Learning Video Representations without a Single Labeled Video</h1><p>这个是CMU和FAIR合作的论文。我感觉比之前的数据蒸馏<strong>硬核</strong>许多。</p>
 <p>训练一个好的视频理解模型往往需要大量的视频标注数据集，然而不同于图片，视频标注本身就困难需要因为有许多帧都要过一遍才行。我们知道ImageNet预训练的网络对图像有很好的层级化表征，但是目前比较先进的方法I3D，要求视频理解模型与ImageNet预训练模型有相似的结构，而这个约束是很严格的，比如R(2+1)D就不能适用。本文的思想是使用ImageNet预训练的模型作为teacher，训练视频理解模型。</p>
-<p>方法：首先有两类数据集：A和B，A是无监督数据集，B是有监督数据集。在A中训练视频理解模型，损失函数是交叉熵：ImageNet预训练模型输出的概率与student模型输出概率。然后在B的训练集中finetunestudent模型，在B的测试集上测试模型。</p>
+<p>方法：首先有两类数据集：A和B，A是无监督数据集，B是有监督数据集。在A中训练视频理解模型，损失函数是交叉熵：ImageNet预训练模型输出的概率与student模型输出概率。然后在B的训练集中finetune student模型，在B的测试集上测试模型。</p>
 <p>一个关键的问题是在A训练student时，teacher的输入是一张图片，如何确定选择输入短视频中的那一帧作为teacher的输入呢？文章测试了：随机采样、中心采样和多个采样点求均值的方法。</p>
 <p>最后的一个结论是，这种teacher-student的蒸馏框架比inflated(I3D)的方法好很多，但是比起在更大的监督数据集上的预训练依然有差距，但是这个是可以接受的，至少本文提出了一种无监督的更好的视频理解模型的初始化方法，是有贡献的。</p>
 
