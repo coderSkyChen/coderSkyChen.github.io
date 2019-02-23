@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://coderskychen.cn">
-  <title>Archives | SkyChen的博客</title>
+  <title>知识蒸馏三部曲：从模型蒸馏、数据蒸馏到任务蒸馏 | SkyChen的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="SkyChen的博客">
-<meta property="og:url" content="https://coderskychen.cn/archives/page/2/index.html">
+  <meta name="description" content="最近看到了任务蒸馏的论文，顺便整理一下蒸馏方向的文章。">
+<meta name="keywords" content="深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="知识蒸馏三部曲：从模型蒸馏、数据蒸馏到任务蒸馏">
+<meta property="og:url" content="https://coderskychen.cn/2019/02/23/distilling/index.html">
 <meta property="og:site_name" content="SkyChen的博客">
+<meta property="og:description" content="最近看到了任务蒸馏的论文，顺便整理一下蒸馏方向的文章。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-23T05:05:51.138Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SkyChen的博客">
+<meta name="twitter:title" content="知识蒸馏三部曲：从模型蒸馏、数据蒸馏到任务蒸馏">
+<meta name="twitter:description" content="最近看到了任务蒸馏的论文，顺便整理一下蒸馏方向的文章。">
   
     <link rel="alternative" href="/atom.xml" title="SkyChen的博客" type="application/atom+xml">
   
@@ -146,382 +151,87 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-distilling" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      知识蒸馏三部曲：从模型蒸馏、数据蒸馏到任务蒸馏
+    </h1>
+  
+
+        
+        <a href="/2019/02/23/distilling/" class="archive-article-date">
+  	<time datetime="2019-02-23T03:44:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-23</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近看到了任务蒸馏的论文，顺便整理一下蒸馏方向的文章。<br><a id="more"></a><br>我了解到“蒸馏”一词最早出现在15年Hinton的论文中。</p>
+<h1 id="模型蒸馏：Distilling-the-Knowledge-in-a-Neural-Network"><a href="#模型蒸馏：Distilling-the-Knowledge-in-a-Neural-Network" class="headerlink" title="模型蒸馏：Distilling the Knowledge in a Neural Network"></a>模型蒸馏：Distilling the Knowledge in a Neural Network</h1><p>我们知道模型集成是效果提升的一个很直观的方法，比如参加一些比赛的时候用来最后的提升，但是普通的集成方法往往需要多个模型，消耗的计算资源会比较多。这篇文章提出了“distillation”方法来缓解这个问题。</p>
+<p>集成模型通常有较好的泛化能力，而蒸馏就是把复杂的集成模型的能力迁移到小模型中的一种方法。</p>
+<p>方法：训练小网络拟合复杂模型的输出（也可以加入原任务的loss进行多任务训练）。$q_i = \frac{exp(z_i/T)}{\sum_j exp(z_j / T)}$，这个是softmax函数，完成从网络输出的logtis到probabilities的映射。这里的<code>T</code>代表温度，通常默认1，对于分类任务来说使用<code>T=1</code>往往会导致不同类的概率差距很大，过度集中于某一个类，其他类别的信息难以利用。为此该文章特别强调增大温度的设置值，以此来增强其他类别的信息。这个比较好理解，增大温度相当于e的指数项变小了，因此不同类别的差异也变小了。</p>
+<ul>
+<li>蒸馏法可以这样形象的理解，增大温度<code>T</code>，将无关重要的数据结构蒸发，只留下我们在意的抽象关联（特征）。</li>
+<li>复杂模型的输出透露的信息很重要，比如哈士奇、拉布拉斯和橘猫这三种类别，自行脑补吧。</li>
+</ul>
+<h1 id="数据蒸馏：Data-Distillation-Towards-Omni-Supervised-Learning"><a href="#数据蒸馏：Data-Distillation-Towards-Omni-Supervised-Learning" class="headerlink" title="数据蒸馏：Data Distillation: Towards Omni-Supervised Learning"></a>数据蒸馏：Data Distillation: Towards Omni-Supervised Learning</h1><p>这个是FAIR的文章，开篇就来一句：“omni-supervised”，这个和“开局一把刀，开局一只鸡”有什么区别。。。</p>
+<p>我们先不管什么omni-supervised这种挖概念的，这篇文章整个是围绕数据蒸馏来的。什么是数据蒸馏呢？简单来说，模型不集成了，只要一个模型就可以，我变换数据然后就能得到相应的结果，把这些结果集成起来扔给学生模型去学习。</p>
+<p>数据蒸馏有四个步骤：</p>
+<ol>
+<li>在有标签的数据集上训练一个模型</li>
+<li>将无监督的数据通过多种数据变化后输入模型</li>
+<li>结果集成，得到伪标签</li>
+<li>使用有监督数据和有伪标签的无监督数据重新训练模型</li>
+</ol>
+<h1 id="任务蒸馏：DistInit-Learning-Video-Representations-without-a-Single-Labeled-Video"><a href="#任务蒸馏：DistInit-Learning-Video-Representations-without-a-Single-Labeled-Video" class="headerlink" title="任务蒸馏：DistInit: Learning Video Representations without a Single Labeled Video"></a>任务蒸馏：DistInit: Learning Video Representations without a Single Labeled Video</h1><p>这个是CMU和FAIR合作的论文。我感觉比之前的数据蒸馏<strong>硬核</strong>许多。</p>
+<p>训练一个好的视频理解模型往往需要大量的视频标注数据集，然而不同于图片，视频标注本身就困难需要因为有许多帧都要过一遍才行。我们知道ImageNet预训练的网络对图像有很好的层级化表征，但是目前比较先进的方法I3D，要求视频理解模型与ImageNet预训练模型有相似的结构，而这个约束是很严格的，比如R(2+1)D就不能适用。本文的思想是使用ImageNet预训练的模型作为teacher，训练视频理解模型。</p>
+<p>方法：首先有两类数据集：A和B，A是无监督数据集，B是有监督数据集。在A中训练视频理解模型，损失函数是交叉熵：ImageNet预训练模型输出的概率与student模型输出概率。然后在B的训练集中finetunestudent模型，在B的测试集上测试模型。</p>
+<p>一个关键的问题是在A训练student时，teacher的输入是一张图片，如何确定选择输入短视频中的那一帧作为teacher的输入呢？文章测试了：随机采样、中心采样和多个采样点求均值的方法。</p>
+<p>最后的一个结论是，这种teacher-student的蒸馏框架比inflated(I3D)的方法要很多，但是比起在更大的监督数据集上预训练依然有差距，但是这个是可以接受的，至少本文提出了一种无监督的更好的视频理解模型的初始化方法，是有贡献的。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢老板0.0<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/ali.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/wx.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/28/booklist-2017/" class="archive-article-date">
-  	<time datetime="2018-05-28T14:14:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/28/booklist-2017/">书单2017</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/22/walking/" class="archive-article-date">
-  	<time datetime="2018-05-22T14:52:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/22/walking/">《意义》</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/10/local-module/" class="archive-article-date">
-  	<time datetime="2018-05-10T08:58:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/10/local-module/">简析《Iterative Visual Reasoning》中的局部推理</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">视觉推理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/02/iter-reason/" class="archive-article-date">
-  	<time datetime="2018-05-02T14:55:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/02/iter-reason/">《pytorch复现：Iterative Visual Reasoning Beyond Convolutions》</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">reimplementation</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">pytorch</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">region recognition</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">spatial reasoning</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/15/action-zoo/" class="archive-article-date">
-  	<time datetime="2018-03-15T14:38:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/15/action-zoo/">《常见的动作识别算法实现》</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">动作识别</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">reimplementation</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">pytorch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/14/jidong/" class="archive-article-date">
-  	<time datetime="2018-02-14T12:58:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/14/jidong/">《和解》</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/10/poetry-likehim/" class="archive-article-date">
-  	<time datetime="2018-01-10T12:58:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/10/poetry-likehim/">《像他一样的人》</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/02/poetry-solemn-moment/" class="archive-article-date">
-  	<time datetime="2018-01-02T12:18:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/02/poetry-solemn-moment/">《庄严的时刻》</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/12/09/capnet/" class="archive-article-date">
-  	<time datetime="2017-12-09T09:33:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/09/capnet/">理解胶囊网络：《Dynamic Routing Between Capsules》</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -533,64 +243,103 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://coderskychen.cn/2019/02/23/distilling/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/12/02/videocaption/" class="archive-article-date">
-  	<time datetime="2017-12-02T11:33:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-02</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/02/17/xxf/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《西西弗神话》与荒诞</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/02/videocaption/">视频描述小总结</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">videocaption</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/">&laquo; Prev</a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><a class="extend next" rel="next" href="/archives/page/3/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -614,8 +363,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
