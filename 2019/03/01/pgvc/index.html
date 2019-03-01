@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://coderskychen.cn">
-  <title>《庄严的时刻》 | SkyChen的博客</title>
+  <title>浅谈策略梯度在视觉描述任务中的应用 | SkyChen的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="你也有过这样的时刻吗？">
-<meta name="keywords" content="随笔">
+  <meta name="description" content="强化学习中的策略梯度在视觉描述任务的应用。">
+<meta name="keywords" content="强化学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《庄严的时刻》">
-<meta property="og:url" content="https://coderskychen.cn/2018/01/02/poetry-solemn-moment/index.html">
+<meta property="og:title" content="浅谈策略梯度在视觉描述任务中的应用">
+<meta property="og:url" content="https://coderskychen.cn/2019/03/01/pgvc/index.html">
 <meta property="og:site_name" content="SkyChen的博客">
-<meta property="og:description" content="你也有过这样的时刻吗？">
+<meta property="og:description" content="强化学习中的策略梯度在视觉描述任务的应用。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-15T15:52:24.810Z">
+<meta property="og:updated_time" content="2019-03-01T03:31:44.179Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《庄严的时刻》">
-<meta name="twitter:description" content="你也有过这样的时刻吗？">
+<meta name="twitter:title" content="浅谈策略梯度在视觉描述任务中的应用">
+<meta name="twitter:description" content="强化学习中的策略梯度在视觉描述任务的应用。">
   
     <link rel="alternative" href="/atom.xml" title="SkyChen的博客" type="application/atom+xml">
   
@@ -151,27 +151,53 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-poetry-solemn-moment" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-pgvc" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      《庄严的时刻》
+      浅谈策略梯度在视觉描述任务中的应用
     </h1>
   
 
         
-        <a href="/2018/01/02/poetry-solemn-moment/" class="archive-article-date">
-  	<time datetime="2018-01-02T12:18:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-02</time>
+        <a href="/2019/03/01/pgvc/" class="archive-article-date">
+  	<time datetime="2019-03-01T02:10:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-01</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>你也有过这样的时刻吗？<br><a id="more"></a><br>鲜黄色的裙子让人一眼就能看出来，<br>而这双高跟鞋发出的滴答声，<br>仿佛和她的心跳一个节奏；<br>她抱怨着时间太快了，<br>总觉得脸上的妆还没涂匀；<br>唯一让她感到满意的，<br>是她那散着香气的长发；<br>是的，他说过，<br>“你身后的风有一种芳香”</p>
+        <p>强化学习中的策略梯度在视觉描述任务的应用。<br><a id="more"></a><br>最近在系统性的回顾和整理强化学习，之前做过一段时间的视觉描述任务，而强化学习在该任务中的效果很不错，是从序列决策角度来解决视觉问题的一个典范吧。</p>
+<p>强化学习关注求解一个策略，什么样的策略呢？一个可以使在agent与环境的交互过程中取得尽可能大的奖励的策略。那在视觉里边其实也是有很多任务是典型的序列决策模式的，比如：</p>
+<ul>
+<li>视觉描述，无论是image caption还是video caption，序列决策主要体现在文本生成的过程中。</li>
+<li>视频理解相关任务，跟踪，摘要，关键帧，早期识别等等，视频本身来说就是一种有序列性质的数据结构，因此很多视频相关的任务都可以应用RL建模。</li>
+</ul>
+<h1 id="传统方法：交叉熵损失下的文本生成"><a href="#传统方法：交叉熵损失下的文本生成" class="headerlink" title="传统方法：交叉熵损失下的文本生成"></a>传统方法：交叉熵损失下的文本生成</h1><p>我们假设生成文本的长度为$T$，在交叉熵损失下，我们希望每一个时间步$t$生成的单词尽可能和ground truth一致，这种设置下每个时间步(单词)都会产生一个loss，最后优化目标是总loss最小。<br>$$L(\theta)==\sum_{t=1}^T log(p_{\theta}(w_t^<em>))$$<br>其中，${w_1^</em>,…,w_T^*}$是目标生成语句(ground truth)。</p>
+<h1 id="强化学习：策略梯度下的文本生成"><a href="#强化学习：策略梯度下的文本生成" class="headerlink" title="强化学习：策略梯度下的文本生成"></a>强化学习：策略梯度下的文本生成</h1><p>我们首先来回顾一下什么是策略梯度。</p>
+<p>策略梯度，顾名思义是一种策略的搜索方法，只不过是依据梯度进行搜索。搜索的目标自然是最大化累积回报。<br>目标函数$J(\theta)$关于策略参数$\theta$的导数为：<br>$$\frac{\partial J(\theta)}{\partial \theta}= \frac{\partial}{\partial \theta} \int p_{\theta}G(\tau)$$<br>$$= \int p_\theta(\tau)(\frac{\partial}{\partial \theta log p_\theta(\tau)) G(\tau) d\tau$$<br>$$= \mathbb{E}_{\tau \sim p_\theta(\tau)} [\frac{\partial}{\partial \theta log p_\theta(\tau) G(\tau)]$$<br>其中$\tau$指的是某一条完整轨迹，$G(\tau)$指的是该条轨迹的累积回报。上述公式主要是做了一个<code>log</code>变换，log有一个很好的属性就是可以把连乘变成加法，而且这样变换之后出现了一个期望，我们喜欢期望，因为有了期望我们就可以通过有限样本的采样去逼近它(大数定理)。</p>
+<p>我们可以看到上式的关键是$\frac{\partial}{\partial \theta log p_\theta(\tau)}$,轨迹是由多个step组成的，因此可以方便的展开：<br>$$\frac{\partial}{\partial \theta log p_\theta(\tau)}=\frac{\partial}{\partial \theta} log(p(s_0) \prod_{t=0}^{T-1} \pi_\theta(a_t|s_t)p(s_{t+1}|s_t,a_t))$$<br>$$=\frac{\partial}{\partial \theta}(log p(s_0) + \sum_{t=0}^{T-1}log \pi_\theta(a_t|s_t)+log p(s_{t+1}|s_t,a_t))$$<br>$$=\sum_{t=0}^{T-1} \frac{\partial}{\partial \theta log \pi_\theta(a_t|s_t)$$</p>
+<p>上述第二行的化简把状态转移概率矩阵消除了，这是因为我们没有对环境建模(model-free)，状态转移概率与策略无关。至此我们就完成了策略梯度的求导过程，我们可以发现整个过程都是可导的。</p>
+<p>那么怎么应用到视觉生成的任务中呢？主要是以下几点：</p>
+<ul>
+<li>$\tau$ 对应一个完整描述(生成的句子)</li>
+<li>$G(\tau)$ 对应该句话的得分(和评价指标有关，比如BELU)</li>
+<li>小细节：baseline的引入以及探索-利用的均衡。简单的策略梯度是针对整个轨迹来说的，因而回报的方差会很大，为了降低方差，往往会引入一个baseline，这里不做具体展开。探索-利用的平衡是强化学习重要的主题，一种常见的方法是依据action的概率去采样动作，而不是直接argmax来得到动作，这个方法非常work。<br>整体网络结构不会有变化，每个时间步依然是通过<code>softmax</code>层得到对所有单词的概率估计，但是loss的计算很不一样了，策略梯度下的loss是整个轨迹的得分，而交叉熵是句子中每个单词得分损失之和。</li>
+</ul>
+<h1 id="两种方法的对比"><a href="#两种方法的对比" class="headerlink" title="两种方法的对比"></a>两种方法的对比</h1><h2 id="交叉熵损失"><a href="#交叉熵损失" class="headerlink" title="交叉熵损失"></a>交叉熵损失</h2><ul>
+<li>本质是单词级的优化</li>
+<li>不能保证损失函数和评价目标严格相关，比如交叉熵损失小，但是BELU得分不一定就高。</li>
+<li>训练和测试不一致问题，训练时输入的是上一时刻的ground truth，来作为上一步的上下文信息。但是测试的时候没有ground truth，只能使用上一步预测的单词。</li>
+</ul>
+<h2 id="策略梯度"><a href="#策略梯度" class="headerlink" title="策略梯度"></a>策略梯度</h2><ul>
+<li>句子级别的优化</li>
+<li>直接优化评价目标($G(\tau)$)</li>
+<li>训练测试一致</li>
+</ul>
 
       
 
@@ -216,7 +242,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">强化学习</a>
         		</li>
       		
 		</ul>
@@ -272,7 +298,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=https://coderskychen.cn/2018/01/02/poetry-solemn-moment/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://coderskychen.cn/2019/03/01/pgvc/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -286,18 +312,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/01/10/poetry-likehim/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          《像他一样的人》
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/12/09/capnet/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">理解胶囊网络：《Dynamic Routing Between Capsules》</div>
+    <a href="/2019/02/27/wj/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">所谓误解</div>
       <i class="icon-circle-right"></i>
     </a>
   
