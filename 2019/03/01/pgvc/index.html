@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="SkyChen的博客">
 <meta property="og:description" content="强化学习中的策略梯度在视觉描述任务的应用。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-01T03:52:30.491Z">
+<meta property="og:updated_time" content="2019-03-01T03:54:51.648Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈策略梯度在视觉描述任务中的应用">
 <meta name="twitter:description" content="强化学习中的策略梯度在视觉描述任务的应用。">
@@ -177,7 +177,7 @@
 <li>视觉描述，无论是image caption还是video caption，序列决策主要体现在文本生成的过程中。</li>
 <li>视频理解相关任务，跟踪，摘要，关键帧，早期识别等等，视频本身来说就是一种有序列性质的数据结构，因此很多视频相关的任务都可以应用RL建模。</li>
 </ul>
-<h1 id="传统方法：交叉熵损失下的文本生成"><a href="#传统方法：交叉熵损失下的文本生成" class="headerlink" title="传统方法：交叉熵损失下的文本生成"></a>传统方法：交叉熵损失下的文本生成</h1><p>我们假设生成文本的长度为$T$，在交叉熵损失下，我们希望每一个时间步$t$生成的单词尽可能和ground truth一致，这种设置下每个时间步(单词)都会产生一个loss，最后优化目标是总loss最小。<br>$$L(\theta)=\sum_{t=1}^T log(p_{\theta} (w_{t}))$$<br>其中，${w_{1},…,w_{T}}$是目标生成语句(ground truth)。</p>
+<h1 id="传统方法：交叉熵损失下的文本生成"><a href="#传统方法：交叉熵损失下的文本生成" class="headerlink" title="传统方法：交叉熵损失下的文本生成"></a>传统方法：交叉熵损失下的文本生成</h1><p>我们假设生成文本的长度为$T$，在交叉熵损失下，我们希望每一个时间步$t$生成的单词尽可能和ground truth一致，这种设置下每个时间步(单词)都会产生一个loss，最后优化目标是总loss最小。<br>$$L(\theta)=- \sum_{t=1}^T log(p_{\theta} (w_{t}))$$<br>其中，${w_{1},…,w_{T}}$是目标生成语句(ground truth)。</p>
 <h1 id="强化学习：策略梯度下的文本生成"><a href="#强化学习：策略梯度下的文本生成" class="headerlink" title="强化学习：策略梯度下的文本生成"></a>强化学习：策略梯度下的文本生成</h1><p>我们首先来回顾一下什么是策略梯度。</p>
 <p>策略梯度，顾名思义是一种策略的搜索方法，只不过是依据梯度进行搜索。搜索的目标自然是最大化累积回报。<br>目标函数$J(\theta)$关于策略参数$\theta$的导数为：<br>$$\frac{\partial J(\theta)}{\partial \theta}= \frac{\partial}{\partial \theta} \int p_{\theta}G(\tau)$$<br>$$= \int p_\theta (\tau)(\frac{\partial}{\partial \theta} log p_\theta (\tau)) G(\tau) d \tau$$<br>$$= \mathbb{E}_{\tau \sim p_\theta (\tau)} [\frac{\partial}{\partial \theta} log p_\theta (\tau) G(\tau)]$$<br>其中$\tau$指的是某一条完整轨迹，$G(\tau)$指的是该条轨迹的累积回报。上述公式主要是做了一个<code>log</code>变换，log有一个很好的属性就是可以把连乘变成加法，而且这样变换之后出现了一个期望，我们喜欢期望，因为有了期望我们就可以通过有限样本的采样去逼近它(大数定理)。</p>
 <p>我们可以看到上式的关键是$\frac{\partial}{\partial \theta} log p_\theta(\tau)$,轨迹是由多个step组成的，因此可以方便的展开：<br>$$\frac{\partial}{\partial \theta} log p_\theta (\tau)=\frac{\partial}{\partial \theta} log(p(s_0) \prod_{t=0}^{T-1} \pi_\theta(a_t|s_t)p(s_{t+1}|s_t,a_t))$$<br>$$=\frac{\partial}{\partial \theta}(log p(s_0) + \sum_{t=0}^{T-1}log \pi_\theta(a_t|s_t)+log p(s_{t+1}|s_t,a_t))$$<br>$$=\sum_{t=0}^{T-1} \frac{\partial}{\partial \theta} log \pi_\theta (a_t|s_t)$$</p>
@@ -451,11 +451,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">动作识别</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">reimplementation</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -463,23 +459,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">pytorch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">视觉推理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">排序学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -491,7 +471,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">reimplementation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">pytorch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">视觉推理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -500,6 +496,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">videocaption</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">温故知新</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -515,10 +515,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据挖掘</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">暗通道去雾</a>
               </li>
              
@@ -531,11 +527,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">温故知新</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据挖掘</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">视频编解码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">动作识别</a>
               </li>
             
             <div class="clearfix"></div>
