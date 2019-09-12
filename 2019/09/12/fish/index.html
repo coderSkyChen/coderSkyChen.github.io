@@ -6,25 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://coderskychen.cn">
-  <title>暗通道去雾算法的C++实现与优化（二） | SkyChen的博客</title>
+  <title>水缸里的鱼 | SkyChen的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文主要介绍了暗通道去雾的opencv实现。">
-<meta name="keywords" content="暗通道去雾,C\C++,opencv">
+  <meta name="description" content="看到同事养的小鱼。在观赏它们的同时，我经常会想，鱼缸那么小，小鱼多闷呀。但转念一想，我们和小鱼没有本质的区别呀。如果把每个人一生的轨迹都用热力图显示出来，可以预见的，我们每个人的活动区域其实也就不过方圆百里而已。再往远处想，99.99\%的人类都没有走出过地球，太阳系。而银河系，是我们永恒的大鱼缸，因为光都要走10万年呢。">
+<meta name="keywords" content="随笔">
 <meta property="og:type" content="article">
-<meta property="og:title" content="暗通道去雾算法的C++实现与优化（二）">
-<meta property="og:url" content="https://coderskychen.cn/2015/12/11/暗通道去雾算法的C-实现与优化（二）/index.html">
+<meta property="og:title" content="水缸里的鱼">
+<meta property="og:url" content="https://coderskychen.cn/2019/09/12/fish/index.html">
 <meta property="og:site_name" content="SkyChen的博客">
-<meta property="og:description" content="本文主要介绍了暗通道去雾的opencv实现。">
+<meta property="og:description" content="看到同事养的小鱼。在观赏它们的同时，我经常会想，鱼缸那么小，小鱼多闷呀。但转念一想，我们和小鱼没有本质的区别呀。如果把每个人一生的轨迹都用热力图显示出来，可以预见的，我们每个人的活动区域其实也就不过方圆百里而已。再往远处想，99.99\%的人类都没有走出过地球，太阳系。而银河系，是我们永恒的大鱼缸，因为光都要走10万年呢。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://coderskychen.cn/img/blog/5.png">
-<meta property="og:image" content="https://coderskychen.cn/img/blog/6.png">
-<meta property="og:image" content="https://coderskychen.cn/img/blog/7.png">
-<meta property="og:image" content="https://coderskychen.cn/img/blog/8.png">
-<meta property="og:updated_time" content="2016-12-17T14:25:06.000Z">
+<meta property="og:updated_time" content="2019-09-12T15:14:18.542Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="暗通道去雾算法的C++实现与优化（二）">
-<meta name="twitter:description" content="本文主要介绍了暗通道去雾的opencv实现。">
-<meta name="twitter:image" content="https://coderskychen.cn/img/blog/5.png">
+<meta name="twitter:title" content="水缸里的鱼">
+<meta name="twitter:description" content="看到同事养的小鱼。在观赏它们的同时，我经常会想，鱼缸那么小，小鱼多闷呀。但转念一想，我们和小鱼没有本质的区别呀。如果把每个人一生的轨迹都用热力图显示出来，可以预见的，我们每个人的活动区域其实也就不过方圆百里而已。再往远处想，99.99\%的人类都没有走出过地球，太阳系。而银河系，是我们永恒的大鱼缸，因为光都要走10万年呢。">
   
     <link rel="alternative" href="/atom.xml" title="SkyChen的博客" type="application/atom+xml">
   
@@ -156,72 +151,27 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-暗通道去雾算法的C-实现与优化（二）" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-fish" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      暗通道去雾算法的C++实现与优化（二）
+      水缸里的鱼
     </h1>
   
 
         
-        <a href="/2015/12/11/暗通道去雾算法的C-实现与优化（二）/" class="archive-article-date">
-  	<time datetime="2015-12-11T06:48:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-12-11</time>
+        <a href="/2019/09/12/fish/" class="archive-article-date">
+  	<time datetime="2019-09-12T15:03:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本文主要介绍了暗通道去雾的<strong>opencv实现</strong>。<br><a id="more"></a><br><strong>尊重原创，转载请注明出处。</strong></p>
-<p>上一篇中，学习了何的论文中的去雾方法，这一篇中，我按照何的论文思路借助OpenCV 2.4.10 进行了实现，效果的确很好，就是耗时太多了，效果见下图：蓝色圆圈代表大气光值的取值点</p>
-<div align="center"> <img src="/img/blog/5.png" alt="pic"> </div>
-
-<h1 id="点我查看测试样例"><a href="#点我查看测试样例" class="headerlink" title="点我查看测试样例"></a><a href="https://github.com/coderSkyChen/darkchannel_dehaze" target="_blank" rel="external">点我查看测试样例</a></h1><h1 id="突然发现上一篇中忘了介绍大气光值A的求解了，论文中是这样做的："><a href="#突然发现上一篇中忘了介绍大气光值A的求解了，论文中是这样做的：" class="headerlink" title="突然发现上一篇中忘了介绍大气光值A的求解了，论文中是这样做的："></a>突然发现上一篇中忘了介绍大气光值A的求解了，论文中是这样做的：</h1><ul>
-<li>1.首先取暗通道图中最亮的千分之一的像素点。</li>
-<li>2.根据这些像素点的位置在原图中搜索一个最亮的点，这个点的强度（intensity）就是我们要求的A啦。</li>
-<li>何认为这样做的好处就是避免了原图中比较亮的物体作为A的值，比如图片中的白色的汽车，如果从原图中搜索最亮的点不一定能搜到真实的大气光值，可能是白色物体的反射光</li>
-</ul>
-<h1 id="正式开始本文"><a href="#正式开始本文" class="headerlink" title="正式开始本文"></a>正式开始本文</h1><h2 id="首先分享一下我在实现的过程中发现的几点："><a href="#首先分享一下我在实现的过程中发现的几点：" class="headerlink" title="首先分享一下我在实现的过程中发现的几点："></a>首先分享一下我在实现的过程中发现的几点：</h2><ul>
-<li>1.大气光值A的解释，原论文中说那个最亮的点的强度就是我们要找的A，那么问题来了，最亮的点的强度是啥？大气光值A是一个值还是一个RGB三元组呢？<br>  可以肯定的是，A是RGB的一个三元组，RGB三个通道有各自的A，这一点可以从论文的公式中确认。那么搜索的时候，如何定义一个点的强度呢？这里，我采用的是求RGB的平均值。</li>
-<li>2.透射率t(X)不是一个值，是一个同原图一样大小的矩阵，不同的位置有不同的透射率t<br>  在具体求解的时候我进行了一点点简化，即：直接把暗通道图输入，这样减少了一次最小值滤波的过程，而且对结果几乎没有影响的，小小的提速。</li>
-<li>3.透射率图片的精细化<br>  这里我采用了别人写的引导滤波算法，这是一种边缘保持算法；实现的时候需要注意的是引导图需要实现归一化为0.0-1.0之间，因为t在0-1之间。附连接：<a href="http://blog.csdn.NET/pi9nc/article/details/26592377" target="_blank" rel="external">引导滤波算法</a></li>
-<li>4.最后求J的时候注意设置0-255的门限，因为按照公式求时可能出现很大的值也可能有负值出现！！！（调了半天才发现J可能为负值啊亲！）</li>
-<li>5.opencv中遍历图片，最好要用指针啊亲！使用at随机取元素 和使用指针取元素在我的测试中相差了0.5s呢。</li>
-<li>6.网上流传的一个opencv的c++代码中，在计算暗通道的最小值滤波时把原图分成了若干个window，每一个window赋予相同的值，这显然是不符合论文公式的，希望大家<strong>不要被误导</strong>！！可能那个博主是想降低时间复杂度吧，但是那样的操作太粗糙了，违背了滤波的概念。</li>
-</ul>
-<h2 id="暗通道的计算"><a href="#暗通道的计算" class="headerlink" title="暗通道的计算"></a>暗通道的计算</h2><p>我的想法是，先求出每个像素中最暗的那个通道值，最后再统一进行最小值滤波。minfliter是最小值滤波函数，自己写一个就好。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function">Mat <span class="title">Producedarkimg</span><span class="params">(Mat&amp; I,<span class="keyword">int</span> windowsize)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line"><span class="keyword">int</span> min=<span class="number">255</span>;</div><div class="line"><span class="function">Mat <span class="title">dark_img</span><span class="params">(I.rows,I.cols,CV_8UC1)</span></span>;</div><div class="line"><span class="keyword">int</span> radius=(windowsize<span class="number">-1</span>)/<span class="number">2</span>;</div><div class="line"><span class="keyword">int</span> nr= I.rows; <span class="comment">// number of rows  </span></div><div class="line"><span class="keyword">int</span> nl=I.cols;</div><div class="line"><span class="keyword">int</span> b,g,r;</div><div class="line"><span class="keyword">if</span> (I.isContinuous()) &#123;</div><div class="line">	nl = nr * nl;</div><div class="line">	nr = <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nr;i++)</div><div class="line">&#123;</div><div class="line">	<span class="keyword">const</span> uchar* inData=I.ptr&lt;uchar&gt;(i);        </div><div class="line">	uchar* outData=dark_img.ptr&lt;uchar&gt;(i);        </div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nl;j++)</div><div class="line">	&#123;		</div><div class="line">		  b=*inData++;</div><div class="line">		  g=*inData++;</div><div class="line">		  r=*inData++;</div><div class="line">		  min=min&gt;b?b:min;</div><div class="line">		  min=min&gt;g?g:min;</div><div class="line">		  min=min&gt;r?r:min;</div><div class="line">		  *outData++=min;</div><div class="line">		  min=<span class="number">255</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line">dark_img=minfliter(dark_img,windowsize); </div><div class="line"><span class="keyword">return</span> dark_img;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="计算大气光值A-airlight"><a href="#计算大气光值A-airlight" class="headerlink" title="计算大气光值A(airlight)"></a>计算大气光值A(airlight)</h1><ul>
-<li><strong>输入</strong>：暗通道图，原图，窗口大小(必须奇数）</li>
-<li><strong>输出</strong>：大气光值A，一个包含三个元素的一维数组头</li>
-<li>其中，Pixel是我定义的结构体，定义在下边</li>
-<li>注意c++返回数组类型时，一定要用new为数组分配空间，不能用int A[3]={0,0,0};这种方式！！否则返回的数组可能会被释放掉！（别问我为什么知道这么多，都是我爬过的坑啊）</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span>* <span class="title">getatmospheric_light</span><span class="params">(Mat&amp; darkimg,Mat&amp; srcimg,<span class="keyword">int</span> windowsize)</span></span></div><div class="line"><span class="function"> </span>&#123;</div><div class="line">      <span class="keyword">int</span> radius=(windowsize<span class="number">-1</span>)/<span class="number">2</span>;</div><div class="line">      <span class="keyword">int</span> nr=darkimg.rows,nl=darkimg.cols;</div><div class="line">      <span class="keyword">int</span> darksize=nr*nl;</div><div class="line">      <span class="keyword">int</span> topsize=darksize/<span class="number">1000</span>;</div><div class="line">      <span class="keyword">int</span> *A=<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">3</span>];</div><div class="line">      <span class="keyword">int</span> sum[<span class="number">3</span>]=&#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>&#125;;</div><div class="line">      Pixel *toppixels,*allpixels;</div><div class="line">      toppixels=<span class="keyword">new</span> Pixel[topsize];</div><div class="line">      allpixels=<span class="keyword">new</span> Pixel[darksize];</div><div class="line"></div><div class="line"></div><div class="line">      <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nr;i++)&#123;</div><div class="line">           <span class="keyword">const</span> uchar* outData=darkimg.ptr&lt;uchar&gt;(i);</div><div class="line">           <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nl;j++)</div><div class="line">             &#123;</div><div class="line">                   allpixels[i*nl+j].value=*outData++;</div><div class="line">                   allpixels[i*nl+j].x=i;</div><div class="line">                   allpixels[i*nl+j].y=j;</div><div class="line">              &#125;</div><div class="line">       &#125;</div><div class="line">      <span class="comment">//std::qsort(allpixels,darksize,sizeof(Pixel),qcmp);</span></div><div class="line">      <span class="built_in">std</span>::sort(allpixels,allpixels+darksize,cmp);</div><div class="line">   </div><div class="line">      <span class="built_in">memcpy</span>(toppixels,allpixels,(topsize)*<span class="keyword">sizeof</span>(Pixel)); <span class="comment">//找到了在darkimg中最亮的0.1%个</span></div><div class="line"></div><div class="line">      <span class="keyword">int</span> val0,val1,val2,avg,max=<span class="number">0</span>,maxi,maxj,x,y;</div><div class="line">      <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;topsize;i++)</div><div class="line">      &#123;</div><div class="line">           x=allpixels[i].x;y=allpixels[i].y;</div><div class="line">           <span class="keyword">const</span> uchar* outData=srcimg.ptr&lt;uchar&gt;(x);</div><div class="line">           outData+=<span class="number">3</span>*y;</div><div class="line">           val0=*outData++;</div><div class="line">           val1=*outData++;</div><div class="line">           val2=*outData++;</div><div class="line">           avg=(val0+val1+val2)/<span class="number">3</span>;</div><div class="line">           <span class="keyword">if</span>(max&lt;avg)&#123;max=avg;maxi=x;maxj=y;&#125;</div><div class="line">        &#125;</div><div class="line">      <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++)</div><div class="line">      &#123;</div><div class="line">            A[i]=srcimg.at&lt;Vec3b&gt;(maxi,maxj)[i];</div><div class="line">            <span class="comment">//A[i]=srcimg.at&lt;Vec4b&gt;(maxi,maxj)[i];</span></div><div class="line">            <span class="comment">//A[i]=A[i]&gt;220?220:A[i];</span></div><div class="line">       &#125;</div><div class="line">       <span class="keyword">return</span> A;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p><strong>结构体：</strong></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Pixel</span></span></div><div class="line"><span class="class">&#123;</span></div><div class="line">	<span class="keyword">int</span> x;</div><div class="line">	<span class="keyword">int</span> y;</div><div class="line">	<span class="keyword">int</span> value;</div><div class="line">&#125;Pixel;</div></pre></td></tr></table></figure>
-<h1 id="计算透射图-transmission-并精细-refine-化"><a href="#计算透射图-transmission-并精细-refine-化" class="headerlink" title="计算透射图(transmission)并精细(refine)化"></a>计算透射图(transmission)并精细(refine)化</h1><ul>
-<li><strong>输入</strong>：原图，暗通道图，大气光值A，窗口大小</li>
-<li><strong>输出</strong>：透射图t</li>
-<li>之所以需要暗通道图参数，是因为我进行了简化，使用暗通道图加速计算<br>最后的引导滤波使用原图的灰度图进行引导，具体实现参考上述链接。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function">Mat <span class="title">getTransmission_dark</span><span class="params">(Mat&amp; srcimg,Mat&amp; darkimg,<span class="keyword">int</span> *<span class="built_in">array</span>,<span class="keyword">int</span> windowsize)</span></span></div><div class="line"><span class="function"> </span>&#123;</div><div class="line">	 <span class="keyword">float</span> test;	 </div><div class="line">	 <span class="keyword">float</span> avg_A=(<span class="built_in">array</span>[<span class="number">0</span>]+<span class="built_in">array</span>[<span class="number">1</span>]+<span class="built_in">array</span>[<span class="number">2</span>])/<span class="number">3.0</span>;</div><div class="line">	 <span class="keyword">float</span> w=<span class="number">0.95</span>;</div><div class="line">	 <span class="keyword">int</span> radius=(windowsize<span class="number">-1</span>)/<span class="number">2</span>;</div><div class="line">	 <span class="keyword">int</span> nr=srcimg.rows,nl=srcimg.cols;</div><div class="line">	 <span class="function">Mat <span class="title">transmission</span><span class="params">(nr,nl,CV_32FC1)</span></span>;</div><div class="line"></div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;nr;k++)&#123;</div><div class="line">		<span class="keyword">const</span> uchar* inData=darkimg.ptr&lt;uchar&gt;(k);  </div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> l=<span class="number">0</span>;l&lt;nl;l++)</div><div class="line">		&#123;</div><div class="line">			transmission.at&lt;<span class="keyword">float</span>&gt;(k,l)=<span class="number">1</span>-w*(*inData++/avg_A);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="function">Mat <span class="title">trans</span><span class="params">(nr,nl,CV_32FC1)</span></span>;		</div><div class="line">	<span class="function">Mat <span class="title">graymat</span><span class="params">(nr,nl,CV_8UC1)</span></span>;</div><div class="line">	<span class="function">Mat <span class="title">graymat_32F</span><span class="params">(nr,nl,CV_32FC1)</span></span>;</div><div class="line">	cvtColor(srcimg,graymat, CV_BGR2GRAY);</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nr;i++)&#123;</div><div class="line">		<span class="keyword">const</span> uchar* inData=graymat.ptr&lt;uchar&gt;(i);  </div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nl;j++)</div><div class="line">			graymat_32F.at&lt;<span class="keyword">float</span>&gt;(i,j)=*inData++/<span class="number">255.0</span>;</div><div class="line">	&#125;</div><div class="line">	guidedFilter(transmission,graymat_32F,trans,<span class="number">6</span>*windowsize,<span class="number">0.001</span>);</div><div class="line">	<span class="comment">//bilateralFilter(transmission,trans,10,30,100);</span></div><div class="line">	<span class="comment">//GaussianBlur(transmission,trans,Size(11,11),0,0);</span></div><div class="line">	<span class="keyword">return</span> trans;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<h1 id="计算J-X"><a href="#计算J-X" class="headerlink" title="计算J(X)"></a>计算J(X)</h1><ul>
-<li><strong>输入</strong>：原图，透射图，大气光值，窗口</li>
-<li><strong>输出</strong>：去雾图</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function">Mat <span class="title">recover</span><span class="params">(Mat&amp; srcimg,Mat&amp; t,<span class="keyword">int</span> *<span class="built_in">array</span>,<span class="keyword">int</span> windowsize)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line"> <span class="keyword">int</span> test;</div><div class="line"> <span class="keyword">int</span> radius=(windowsize<span class="number">-1</span>)/<span class="number">2</span>;</div><div class="line"> <span class="keyword">int</span> nr=srcimg.rows,nl=srcimg.cols;</div><div class="line"> <span class="keyword">float</span> tnow=t.at&lt;<span class="keyword">float</span>&gt;(radius,radius);</div><div class="line"> <span class="keyword">float</span> t0=<span class="number">0.1</span>;</div><div class="line"> Mat finalimg=Mat::zeros(nr,nl,CV_8UC3);</div><div class="line"> <span class="keyword">int</span> val=<span class="number">0</span>;</div><div class="line"> <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++)&#123;</div><div class="line">	 <span class="keyword">for</span>(<span class="keyword">int</span> k=radius;k&lt;nr-radius;k++)&#123;</div><div class="line">		 <span class="keyword">const</span> <span class="keyword">float</span>* inData=t.ptr&lt;<span class="keyword">float</span>&gt;(k);  inData+=radius;</div><div class="line">		 <span class="keyword">const</span> uchar* srcData=srcimg.ptr&lt;uchar&gt;(k);  srcData+=radius*<span class="number">3</span>+i;</div><div class="line">		 uchar* outData=finalimg.ptr&lt;uchar&gt;(k);  outData+=radius*<span class="number">3</span>+i;</div><div class="line">		 <span class="keyword">for</span>(<span class="keyword">int</span> l=radius;l&lt;nl-radius;l++)</div><div class="line">		 &#123;				 </div><div class="line">			 tnow=*inData++;</div><div class="line">			 tnow=tnow&gt;t0?tnow:t0;</div><div class="line">			 val=(<span class="keyword">int</span>)((*srcData-<span class="built_in">array</span>[i])/tnow+<span class="built_in">array</span>[i]);	</div><div class="line">			 srcData+=<span class="number">3</span>;</div><div class="line">			 val=val&lt;<span class="number">0</span>?<span class="number">0</span>:val;</div><div class="line">			 *outData=val&gt;<span class="number">255</span>?<span class="number">255</span>:val;</div><div class="line">			 outData+=<span class="number">3</span>;</div><div class="line">		 &#125;</div><div class="line">	 &#125;</div><div class="line"></div><div class="line"> &#125;</div><div class="line"> <span class="keyword">return</span> finalimg;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="几个效果示例"><a href="#几个效果示例" class="headerlink" title="几个效果示例"></a>几个效果示例</h2><div align="center"> <img src="/img/blog/6.png" alt="pic"> </div>
-
-<div align="center"> <img src="/img/blog/7.png" alt="pic"> </div>
-
-<h2 id="美丽天安门的透射图（transmission）如下："><a href="#美丽天安门的透射图（transmission）如下：" class="headerlink" title="美丽天安门的透射图（transmission）如下："></a>美丽天安门的透射图（transmission）如下：</h2><p>可以看到效果的确很好，很精细，这就是使用原图像的灰度图进行引导的好处。</p>
-<div align="center"> <img src="/img/blog/8.png" alt="pic"> </div>
-
+        <p>看到同事养的小鱼。在观赏它们的同时，我经常会想，鱼缸那么小，小鱼多闷呀。但转念一想，我们和小鱼没有本质的区别呀。如果把每个人一生的轨迹都用热力图显示出来，可以预见的，我们每个人的活动区域其实也就不过方圆百里而已。再往远处想，99.99\%的人类都没有走出过地球，太阳系。而银河系，是我们永恒的大鱼缸，因为光都要走10万年呢。</p>
 
       
 
@@ -266,15 +216,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">暗通道去雾</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">C\C++</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">opencv</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
         		</li>
       		
 		</ul>
@@ -330,7 +272,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=https://coderskychen.cn/2015/12/11/暗通道去雾算法的C-实现与优化（二）/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://coderskychen.cn/2019/09/12/fish/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -344,18 +286,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2016/01/08/暗通道去雾算法的C-实现与优化（三）/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          暗通道去雾算法的C++实现与优化（三）
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/12/11/暗通道去雾算法的C-实现与优化（一）/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">暗通道去雾算法的C++实现与优化（一）</div>
+    <a href="/2019/06/05/eccv18-video-cls/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ECCV18视频分类/动作识别论文总结</div>
       <i class="icon-circle-right"></i>
     </a>
   
