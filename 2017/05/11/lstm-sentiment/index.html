@@ -9,13 +9,11 @@
   <title>LSTM for Sentiment Analysis 挖坑笔记 | SkyChen的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="LSTM Networks for Sentiment Analysis是一篇教我们如何在theano上使用LSTM做影评情感分类的教程。其中LSTM在theano的实现十分经典，代码很难读，在学习了我所大神Physcal和onmyway321的博文后，对这个代码有了大体的理解，这里做一些梳理和补充，重点分析了其中高度并行的lstm框架。">
-<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LSTM for Sentiment Analysis 挖坑笔记">
 <meta property="og:url" content="https://coderskychen.cn/2017/05/11/lstm-sentiment/index.html">
 <meta property="og:site_name" content="SkyChen的博客">
 <meta property="og:description" content="LSTM Networks for Sentiment Analysis是一篇教我们如何在theano上使用LSTM做影评情感分类的教程。其中LSTM在theano的实现十分经典，代码很难读，在学习了我所大神Physcal和onmyway321的博文后，对这个代码有了大体的理解，这里做一些梳理和补充，重点分析了其中高度并行的lstm框架。">
-<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://coderskychen.cn/img/blog/lstm.png">
 <meta property="og:image" content="https://coderskychen.cn/img/blog/lstmmodel.png">
 <meta property="og:updated_time" content="2017-05-11T12:03:00.000Z">
@@ -493,19 +491,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">公告</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
+                <a href="javascript:void(0)" class="js-tag color3">公告</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
+                <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -517,11 +511,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">排序学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">视觉推理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序学习</a>
               </li>
              
               <li class="article-tag-list-item">
